@@ -7,8 +7,6 @@ namespace Terraria
 {
     class Chunk
     {
-        private float NoiseValues { get; set; }
-
         public Tile[,] Tiles { get; set; }
 
         public const int CHUNK_SIZE = 25;
@@ -18,8 +16,8 @@ namespace Terraria
         public Texture2D[] Texture { get; set; }
 
         public Vector2 Position { get; set; }
-
-        private Random Random;
+        
+        public Vector2 offset { get; set; }
 
         public Chunk(Texture2D[] texture, Vector2 position, SpriteBatch spriteBatch)
         {
@@ -27,9 +25,7 @@ namespace Terraria
             this.SpriteBatch = spriteBatch;
             this.Position = position;
 
-            Random = new Random();
-
-            Simplex.Noise.Seed = Random.Next();
+            offset = new Vector2(0f, 360f);
 
             Tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
 
@@ -44,22 +40,16 @@ namespace Terraria
                 for (int y = 0; y < CHUNK_SIZE; y++)
                 {
                     Vector2 newPosition = new Vector2(Texture[0].Width * x, Texture[0].Height * y);
-                    newPosition += Position;
+                    newPosition += Position + offset;
 
-                    NoiseValues = Simplex.Noise.CalcPixel2D(x, y, 0.136f);
 
-                    if (NoiseValues >= 0f && NoiseValues <= 120f)
-                        Tiles[x, y] = new Tile(Texture[0], newPosition, SpriteBatch);
-                    else if (NoiseValues >= 121f && NoiseValues <= 190f)
-                        Tiles[x, y] = new Tile(Texture[1], newPosition, SpriteBatch);
-                    else if (NoiseValues >= 170f && NoiseValues <= 199f)
-                        Tiles[x, y] = new Tile(Texture[2], newPosition, SpriteBatch);
-                       else if (NoiseValues >= 236f && NoiseValues <= 255f)
-                        Tiles[x, y] = new Tile(Texture[3], newPosition, SpriteBatch);
-                    else
-                        Tiles[x, y] = new Tile(Texture[4], newPosition, SpriteBatch);
+                    Tiles[x, y] = new Tile(Texture[0], newPosition, SpriteBatch);
                 }
             }
+        }
+
+        public void GenerateNoise()
+        {
         }
 
         public void Draw()

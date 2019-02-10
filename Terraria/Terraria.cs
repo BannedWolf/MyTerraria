@@ -12,6 +12,10 @@ namespace Terraria
         World world;
 
         Texture2D[] tilesTexture;
+
+        Text FPSCounter;
+
+        SpriteFont Font;
         
         public Terraria()
         {
@@ -22,6 +26,8 @@ namespace Terraria
             graphics.PreferredBackBufferWidth = 1280;
 
             IsMouseVisible = true;
+
+            IsFixedTimeStep = true;
         }
 
         protected override void Initialize()
@@ -32,6 +38,8 @@ namespace Terraria
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            Font = Content.Load<SpriteFont>("fonts/emulogic");
 
             tilesTexture = new Texture2D[5];
 
@@ -60,8 +68,12 @@ namespace Terraria
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+            FPSCounter = new Text(Font, new Vector2(15, 15), "FPS: " + frameRate, spriteBatch);
+
             spriteBatch.Begin();
             world.Draw();
+            FPSCounter.Draw();
             spriteBatch.End();
 
             base.Draw(gameTime);
