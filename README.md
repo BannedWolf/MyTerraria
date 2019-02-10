@@ -1,4 +1,4 @@
-# My attempt of creating a simple Terraria-like
+# My attempt of creating a simple Terraria-alike
 ONLY FOR LEARNING EXPERIENCE
 If you are interested in helping out you are welcomed to contact me
 
