@@ -27,7 +27,9 @@ namespace Terraria
 
             IsMouseVisible = true;
 
-            IsFixedTimeStep = true;
+            ///Gets unlimited fps 
+            graphics.SynchronizeWithVerticalRetrace = false; 
+            IsFixedTimeStep = false;
         }
 
         protected override void Initialize()
@@ -49,7 +51,7 @@ namespace Terraria
             tilesTexture[3] = Content.Load<Texture2D>("textures/tile_4");
             tilesTexture[4] = Content.Load<Texture2D>("textures/tile_5");
 
-            world = new World(spriteBatch, tilesTexture, 5);
+            world = new World(spriteBatch, tilesTexture, 15);
         }
 
         protected override void UnloadContent()
@@ -68,8 +70,7 @@ namespace Terraria
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-            FPSCounter = new Text(Font, new Vector2(15, 15), "FPS: " + frameRate, spriteBatch);
+            ShowFPS(gameTime);
 
             spriteBatch.Begin();
             world.Draw();
@@ -77,6 +78,12 @@ namespace Terraria
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void ShowFPS(GameTime gameTime)
+        {
+            float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+            FPSCounter = new Text(Font, new Vector2(15, 15), "FPS: " + frameRate, spriteBatch);
         }
     }
 }

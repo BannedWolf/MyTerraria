@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Terraria
 {
-    class World 
+    class World
     {
         private float NoiseValues { get; set; }
 
@@ -26,6 +26,8 @@ namespace Terraria
 
         public static int WORLD_SIZE;
 
+        public Vector2 Axis { get; set; }
+
         public World(SpriteBatch spriteBatch, Texture2D[] texture, int worldSize)
         {
             this.SpriteBatch = spriteBatch;
@@ -39,6 +41,7 @@ namespace Terraria
             Chunks = new Chunk[WORLD_SIZE, WORLD_SIZE];
 
             GenerateBasicWorld();
+            SetTiles();
         }
 
         public void GenerateBasicWorld()
@@ -49,19 +52,32 @@ namespace Terraria
                 {
                     Position = new Vector2(CHUNK_TILE_SIZE * x, CHUNK_TILE_SIZE * y);
                     Chunks[x, y] = new Chunk(Texture, Position, SpriteBatch);
-
-                    foreach (var tile in Chunks[x, y].Tiles)
-                    {
-                        NoiseValues = Simplex.Noise.CalcPixel2D(x, y, 0.1f);
-
-                        if (NoiseValues >= 0f && NoiseValues <= 120f)
-                            tile.Texture = this.Texture[0];
-                        else if (NoiseValues >= 120f && NoiseValues <= 157f)
-                            tile.Texture = this.Texture[1];
-                        else
-                            tile.Texture = this.Texture[3];
-                    }
                 }
+            }
+        }
+
+        public void SetTiles()
+        {
+            foreach(var chunk in Chunks)
+            {
+                foreach (var tile in chunk.Tiles)
+                {
+                    NoiseValues = Simplex.Noise.CalcPixel2D((int)Axis.X, (int)Axis.Y, 0.1f);
+
+                    if (NoiseValues >= 0f && NoiseValues <= 56.12f)
+                        tile.Texture = this.Texture[3];
+                    else if (NoiseValues >= 57f && NoiseValues <= 87f)
+                        tile.Texture = this.Texture[1];
+                    else if (NoiseValues >= 88f && NoiseValues <= 125f)
+                        tile.Texture = this.Texture[2];
+                    else if (NoiseValues >= 126f && NoiseValues <= 135f)
+                        tile.Texture = this.Texture[4];
+                    else
+                        tile.Texture = this.Texture[0];
+
+                    Axis += new Vector2(0, 1);
+                }
+                Axis += new Vector2(1, 0);
             }
         }
 

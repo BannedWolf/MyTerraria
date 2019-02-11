@@ -7,6 +7,7 @@ namespace Terraria
 {
     class Chunk
     {
+ 
         public Tile[,] Tiles { get; set; }
 
         public const int CHUNK_SIZE = 25;
@@ -41,7 +42,6 @@ namespace Terraria
                 {
                     Vector2 newPosition = new Vector2(Texture[0].Width * x, Texture[0].Height * y);
                     newPosition += Position + offset;
-
 
                     Tiles[x, y] = new Tile(Texture[0], newPosition, SpriteBatch);
                 }
