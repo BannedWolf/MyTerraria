@@ -6,7 +6,7 @@ namespace Terraria
 {
     class World
     {
-        public float[,] noises { get; private set; }
+        public float noise { get; private set; }
 
         private Random Random;
 
@@ -22,7 +22,9 @@ namespace Terraria
 
         public const int CHUNK_TILE_SIZE = 400;
 
-        public Vector2 Axis { get; set; }
+        public int itrY { get; set; }
+
+        public int itrX { get; set; }
 
         public World(SpriteBatch spriteBatch, Texture2D[] texture, int worldSize)
         {
@@ -30,17 +32,16 @@ namespace Terraria
             this.Texture = texture;
             this.WorldSize = worldSize;
 
+            itrX = 0;
+            itrY = 0;
+
             Chunks = new Chunk[WorldSize, WorldSize];
 
             Random = new Random();
             Simplex.Noise.Seed = Random.Next();
 
-            Axis = new Vector2(0, 0);
-
-            noises = Simplex.Noise.Calc2D(WorldSize * 25, WorldSize * 25, 0.1f);
-
             GenerateBasicWorld();
-            OutputNoise();
+            SetByNoise();
         }
 
         public void GenerateBasicWorld()
@@ -55,33 +56,36 @@ namespace Terraria
             }
         }
 
-        public void OutputNoise()
+        public void SetByNoise()
         {
-
-            foreach(var chunk in Chunks)
+            foreach (var chunk in Chunks)
             {
-                foreach(var tile in chunk.Tiles)
+                foreach (var tile in chunk.Tiles)
                 {
-                    for (int x = 0; x < WorldSize * 25; x++)
+                    if(itrY > (Chunk.CHUNK_SIZE * WorldSize) - 1)
                     {
-                        for (int y = 0; y < WorldSize * 25; y++)
-                        {
-                            System.Diagnostics.Trace.WriteLine(noises[x, y]);
-
-                            if(noises[x, y] >= 15f && noises[x, y] <= 125f)
-                            {
-                                tile.Texture = Texture[0];
-                            }
-                            else
-                            {
-                                tile.Texture = Texture[3];
-                            }
-                        }
+                        itrY = 0;
+                        ++itrX;
                     }
+
+                    noise = Simplex.Noise.CalcPixel2D(itrX, itrY, 0.1f);
+
+                    //System.Diagnostics.Trace.WriteLine(itrX + " " + itrY);
+                    System.Diagnostics.Trace.WriteLine(noise);
+
+                    if ((noise >= 0f && noise <= 65f) || (noise >= 67f && noise <= 69f))
+                    {
+                        tile.Texture = Texture[4];
+                    }
+                    else
+                    {
+                        tile.Texture = Texture[0];
+                    }
+                    ++itrY;
                 }
             }
         }
-
+    
         public void Draw()
         {
             foreach (var chunk in Chunks)
