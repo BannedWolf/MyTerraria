@@ -6,7 +6,7 @@ namespace Terraria
 {
     class World
     {
-        private float NoiseValues { get; set; }
+        public float[,] noises { get; private set; }
 
         private Random Random;
 
@@ -18,13 +18,9 @@ namespace Terraria
 
         public Vector2 Position { get; set; }
 
-        public int Height { get; set; }
-
-        public int Width { get; set; }
+        public int WorldSize { get; set; }
 
         public const int CHUNK_TILE_SIZE = 400;
-
-        public static int WORLD_SIZE;
 
         public Vector2 Axis { get; set; }
 
@@ -32,23 +28,26 @@ namespace Terraria
         {
             this.SpriteBatch = spriteBatch;
             this.Texture = texture;
+            this.WorldSize = worldSize;
+
+            Chunks = new Chunk[WorldSize, WorldSize];
 
             Random = new Random();
             Simplex.Noise.Seed = Random.Next();
 
-            WORLD_SIZE = worldSize;
+            Axis = new Vector2(0, 0);
 
-            Chunks = new Chunk[WORLD_SIZE, WORLD_SIZE];
+            noises = Simplex.Noise.Calc2D(WorldSize * 25, WorldSize * 25, 0.1f);
 
             GenerateBasicWorld();
-            SetTiles();
+            OutputNoise();
         }
 
         public void GenerateBasicWorld()
         {
-            for (int x = 0; x < WORLD_SIZE; x++)
+            for (int x = 0; x < WorldSize; x++)
             {
-                for (int y = 0; y < WORLD_SIZE; y++)
+                for (int y = 0; y < WorldSize; y++)
                 {
                     Position = new Vector2(CHUNK_TILE_SIZE * x, CHUNK_TILE_SIZE * y);
                     Chunks[x, y] = new Chunk(Texture, Position, SpriteBatch);
@@ -56,28 +55,30 @@ namespace Terraria
             }
         }
 
-        public void SetTiles()
+        public void OutputNoise()
         {
+
             foreach(var chunk in Chunks)
             {
-                foreach (var tile in chunk.Tiles)
+                foreach(var tile in chunk.Tiles)
                 {
-                    NoiseValues = Simplex.Noise.CalcPixel2D((int)Axis.X, (int)Axis.Y, 0.1f);
+                    for (int x = 0; x < WorldSize * 25; x++)
+                    {
+                        for (int y = 0; y < WorldSize * 25; y++)
+                        {
+                            System.Diagnostics.Trace.WriteLine(noises[x, y]);
 
-                    if (NoiseValues >= 0f && NoiseValues <= 56.12f)
-                        tile.Texture = this.Texture[3];
-                    else if (NoiseValues >= 57f && NoiseValues <= 87f)
-                        tile.Texture = this.Texture[1];
-                    else if (NoiseValues >= 88f && NoiseValues <= 125f)
-                        tile.Texture = this.Texture[2];
-                    else if (NoiseValues >= 126f && NoiseValues <= 135f)
-                        tile.Texture = this.Texture[4];
-                    else
-                        tile.Texture = this.Texture[0];
-
-                    Axis += new Vector2(0, 1);
+                            if(noises[x, y] >= 15f && noises[x, y] <= 125f)
+                            {
+                                tile.Texture = Texture[0];
+                            }
+                            else
+                            {
+                                tile.Texture = Texture[3];
+                            }
+                        }
+                    }
                 }
-                Axis += new Vector2(1, 0);
             }
         }
 

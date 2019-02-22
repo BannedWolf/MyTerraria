@@ -7,7 +7,6 @@ namespace Terraria
 {
     class Chunk
     {
- 
         public Tile[,] Tiles { get; set; }
 
         public const int CHUNK_SIZE = 25;
@@ -31,7 +30,6 @@ namespace Terraria
             Tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
 
             GenerateChunks();
-
         }
 
         public void GenerateChunks()
@@ -46,10 +44,6 @@ namespace Terraria
                     Tiles[x, y] = new Tile(Texture[0], newPosition, SpriteBatch);
                 }
             }
-        }
-
-        public void GenerateNoise()
-        {
         }
 
         public void Draw()

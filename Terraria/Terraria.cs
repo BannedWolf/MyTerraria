@@ -51,7 +51,7 @@ namespace Terraria
             tilesTexture[3] = Content.Load<Texture2D>("textures/tile_4");
             tilesTexture[4] = Content.Load<Texture2D>("textures/tile_5");
 
-            world = new World(spriteBatch, tilesTexture, 15);
+            world = new World(spriteBatch, tilesTexture, 1);
         }
 
         protected override void UnloadContent()
