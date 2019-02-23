@@ -16,7 +16,11 @@ namespace Terraria
         Text FPSCounter;
 
         SpriteFont Font;
-        
+
+        Cursor cursor;
+
+        Texture2D cursorTexture;
+
         public Terraria()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -24,8 +28,6 @@ namespace Terraria
 
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
-
-            IsMouseVisible = true;
 
             ///Gets unlimited fps 
             graphics.SynchronizeWithVerticalRetrace = false; 
@@ -51,7 +53,10 @@ namespace Terraria
             tilesTexture[3] = Content.Load<Texture2D>("textures/tile_4");
             tilesTexture[4] = Content.Load<Texture2D>("textures/tile_5");
 
-            world = new World(spriteBatch, tilesTexture, 10);
+            cursorTexture = Content.Load<Texture2D>("textures/cursor");
+
+            world = new World(spriteBatch, tilesTexture, 1);
+            cursor = new Cursor(cursorTexture);
         }
 
         protected override void UnloadContent()
@@ -62,6 +67,8 @@ namespace Terraria
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            cursor.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -75,6 +82,7 @@ namespace Terraria
             spriteBatch.Begin();
             world.Draw();
             FPSCounter.Draw();
+            cursor.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

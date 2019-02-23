@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Chunk.cs" />
+    <Compile Include="Cursor.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Noise\Simplex.cs" />
     <Compile Include="Sprite.cs" />
