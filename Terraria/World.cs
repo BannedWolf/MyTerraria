@@ -6,7 +6,7 @@ namespace Terraria
 {
     class World
     {
-        public float noise { get; private set; }
+        public float[,] noise { get; private set; }
 
         private Random Random;
 
@@ -26,6 +26,10 @@ namespace Terraria
 
         public int itrX { get; set; }
 
+        public int amount { get; set; }
+
+        public const int MaxDepth = 4;
+
         public World(SpriteBatch spriteBatch, Texture2D[] texture, int worldSize)
         {
             this.SpriteBatch = spriteBatch;
@@ -40,6 +44,8 @@ namespace Terraria
             Random = new Random();
             Simplex.Noise.Seed = Random.Next();
 
+            noise = Simplex.Noise.Calc2D(WorldSize * Chunk.CHUNK_SIZE, MaxDepth * Chunk.CHUNK_SIZE, 0.08f);
+
             GenerateBasicWorld();
             SetByNoise();
         }
@@ -48,7 +54,7 @@ namespace Terraria
         {
             for (int x = 0; x < WorldSize; x++)
             {
-                for (int y = 0; y < WorldSize; y++)
+                for (int y = 0; y < MaxDepth; y++) //4 chunks deep or 100 tiles
                 {
                     Position = new Vector2(CHUNK_TILE_SIZE * x, CHUNK_TILE_SIZE * y);
                     Chunks[x, y] = new Chunk(Texture, Position, SpriteBatch);
@@ -58,31 +64,34 @@ namespace Terraria
 
         public void SetByNoise()
         {
-            foreach (var chunk in Chunks)
+            for (int x = 0; x < WorldSize; x++)
             {
-                foreach (var tile in chunk.Tiles)
+                for (int y = 0; y < MaxDepth; y++)
                 {
-                    if(itrY > (Chunk.CHUNK_SIZE * WorldSize) - 1)
+                    foreach (var tile in Chunks[x, y].Tiles)
                     {
-                        itrY = 0;
+                        //System.Diagnostics.Trace.WriteLine(itrX + " " + itrY);
+                        //System.Diagnostics.Trace.WriteLine(noise);
+
+                        if(itrX > Chunk.CHUNK_SIZE)
+                        {
+                            itrX = 0;
+                            ++itrY;
+                            if (itrY > Chunk.CHUNK_SIZE)
+                                itrY = 0;
+                        }
+
+                        if (noise[itrX, itrY] >= 0f && noise[itrX, itrY] <= 85f)
+                        {
+                            tile.Texture = Texture[4];
+                        }
+                        else
+                        {
+                            tile.Texture = Texture[0];
+                        }
                         ++itrX;
                     }
-
-                    noise = Simplex.Noise.CalcPixel2D(itrX, itrY, 0.1f);
-
-                    //System.Diagnostics.Trace.WriteLine(itrX + " " + itrY);
-                    System.Diagnostics.Trace.WriteLine(noise);
-
-                    if ((noise >= 0f && noise <= 65f) || (noise >= 67f && noise <= 69f))
-                    {
-                        tile.Texture = Texture[4];
-                    }
-                    else
-                    {
-                        tile.Texture = Texture[0];
-                    }
-                    ++itrY;
-                }
+                }        
             }
         }
     

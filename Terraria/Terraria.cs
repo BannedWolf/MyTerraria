@@ -29,9 +29,6 @@ namespace Terraria
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
 
-            ///Gets unlimited fps 
-            graphics.SynchronizeWithVerticalRetrace = false; 
-            IsFixedTimeStep = false;
         }
 
         protected override void Initialize()
@@ -55,7 +52,7 @@ namespace Terraria
 
             cursorTexture = Content.Load<Texture2D>("textures/cursor");
 
-            world = new World(spriteBatch, tilesTexture, 1);
+            world = new World(spriteBatch, tilesTexture, 10);
             cursor = new Cursor(cursorTexture);
         }
 

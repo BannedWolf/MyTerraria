@@ -25,7 +25,7 @@ namespace Terraria
             this.SpriteBatch = spriteBatch;
             this.Position = position;
 
-            offset = new Vector2(0f, 220f); //Initial draw offset
+            offset = new Vector2(0f, 110f); //Initial draw offset of tiles chunks
 
             Tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
 
