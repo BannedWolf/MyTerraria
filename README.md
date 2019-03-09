@@ -14,3 +14,5 @@ Current progress as of 02/10/19
 ![alt terraria.exe](https://i.imgur.com/4YjZTsF.png)
 
 ![alt terraria.exe](https://i.imgur.com/SSW2NfG.png)
+
+-as of 03/09/19 this project is abandoned-
